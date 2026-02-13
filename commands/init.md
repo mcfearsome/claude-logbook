@@ -65,6 +65,8 @@ id_prefix: F
 
 6. Confirm initialization is complete and show the user what was created.
 
+7. Suggest next steps: "Run `/logbook:walkthrough` for a guided tour of what logbook can do, or `/logbook:backlog` to start building your feature list."
+
 ### Batch mode (multiple paths or glob)
 
 If multiple paths are given (e.g., `/logbook:init colony-shell colony-cloud colony-terminal`), initialize each one:

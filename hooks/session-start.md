@@ -20,7 +20,11 @@ Default tracking file locations (if no config found):
 - `.claude/system/history.txt` — chronological work log
 - `.claude/system/rules.txt` — accumulated project constraints and discoveries
 
-Read all tracking files that exist. If none exist, skip to step 4.
+Read all tracking files that exist. If no config and no tracking files exist at either location, this is likely a fresh install. Show a brief welcome:
+
+> **Logbook is installed** but not yet set up for this project. Run `/logbook:init` to create tracking files, or `/logbook:walkthrough` for a guided tour of what logbook can do.
+
+Then skip to step 4 (announce that there's no tracking context yet) and proceed to the user's request.
 
 ## 3. Identify Current Focus
 

@@ -32,6 +32,8 @@ Once installed, initialize in any project:
 /logbook:init
 ```
 
+New to logbook? Run `/logbook:walkthrough` for a guided tour.
+
 ## What it does
 
 ### Hooks (automatic)
@@ -55,6 +57,7 @@ Once installed, initialize in any project:
 | `/logbook:backlog [from <file>]` | Interactive backlog building or import |
 | `/logbook:roadmap [port]` | Live roadmap dashboard in the browser |
 | `/logbook:workspace init\|status\|add\|remove` | Multi-project workspace management |
+| `/logbook:walkthrough` | Guided tour of logbook features and commands |
 | `/logbook:end` | Manually trigger session end protocol |
 
 ## Tracking files
@@ -198,6 +201,7 @@ claude-logbook/
 │   ├── backlog.md               # /logbook:backlog
 │   ├── roadmap.md               # /logbook:roadmap
 │   ├── workspace.md             # /logbook:workspace
+│   ├── walkthrough.md            # /logbook:walkthrough
 │   └── session-end.md           # /logbook:end
 ├── agents/
 │   └── session-tracker.md       # Bulk tracking operations
