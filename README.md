@@ -6,7 +6,15 @@ Logbook gives Claude persistent memory across sessions. It automates session sta
 
 ## Install
 
-Add to your `~/.claude/settings.json`:
+### From the marketplace
+
+```bash
+claude plugin marketplace add https://github.com/mcfearsome/cc-marketplace
+```
+
+### Manual
+
+Clone the repo and add it to your `~/.claude/settings.json`:
 
 ```json
 {
@@ -16,7 +24,9 @@ Add to your `~/.claude/settings.json`:
 }
 ```
 
-Then initialize in any project:
+### Getting started
+
+Once installed, initialize in any project:
 
 ```
 /logbook:init
