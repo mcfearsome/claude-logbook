@@ -1,5 +1,5 @@
 {
   "name": "claude-logbook",
   "description": "Session lifecycle management and work tracking for Claude Code. Automates session start/end protocols, maintains structured tracking files (features, history, rules), and ensures continuity across sessions.",
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

@@ -91,12 +91,40 @@ async function resolveProjectFeatures(configPath, projectRoot) {
 }
 
 async function readFeatures(path) {
+  let raw;
   try {
-    const raw = await readFile(path, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return [];
+    raw = await readFile(path, "utf-8");
+  } catch (e) {
+    if (e.code === "ENOENT") return [];
+    throw new Error(`Failed to read features file ${path}: ${e.message}`);
   }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    throw new Error(`Invalid JSON in features file ${path}: ${e.message}`);
+  }
+
+  // Handle wrapped format: { features: [...] } or { project: ..., features: [...] }
+  if (parsed && !Array.isArray(parsed) && Array.isArray(parsed.features)) {
+    parsed = parsed.features;
+  }
+
+  if (!Array.isArray(parsed)) {
+    throw new Error(
+      `Features file ${path} must be a JSON array (or { "features": [...] }), got ${typeof parsed}`
+    );
+  }
+
+  // Normalize: accept "name" as alias for "title"
+  for (const f of parsed) {
+    if (!f.title && f.name) {
+      f.title = f.name;
+    }
+  }
+
+  return parsed;
 }
 
 async function readAllFeatures() {
@@ -279,8 +307,54 @@ function esc(s) {
     .replace(/"/g, "&quot;");
 }
 
+function buildErrorPage(error) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Logbook — Error</title>
+<style>
+  :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --dim: #8b949e; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .error-card { background: var(--surface); border: 1px solid #ef444450; border-radius: 8px; padding: 2rem; max-width: 640px; width: 100%; }
+  h1 { font-size: 1.25rem; color: #ef4444; margin-bottom: 1rem; }
+  .message { font-family: monospace; font-size: 0.875rem; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1rem; white-space: pre-wrap; word-break: break-word; margin-bottom: 1.5rem; }
+  .hint { font-size: 0.875rem; color: var(--dim); line-height: 1.5; }
+  .hint code { background: var(--bg); padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+  <div class="error-card">
+    <h1>Failed to load features</h1>
+    <div class="message">${esc(error.message)}</div>
+    <div class="hint">
+      Expected format: a JSON array of feature objects, e.g.<br>
+      <code>[{ "id": "F001", "title": "...", "status": "new", ... }]</code><br><br>
+      Fix the file and this page will auto-reload.
+    </div>
+  </div>
+  <script>setInterval(() => fetch("/api/features").then(r => { if (r.ok) location.reload(); }).catch(() => {}), 2000);</script>
+</body>
+</html>`;
+}
+
 const server = createServer(async (req, res) => {
-  const allFeatures = await readAllFeatures();
+  let allFeatures;
+  try {
+    allFeatures = await readAllFeatures();
+  } catch (error) {
+    console.error(error.message);
+    if (req.url === "/api/features") {
+      res.writeHead(500, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
+      res.end(JSON.stringify({ error: error.message }));
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(buildErrorPage(error));
+    return;
+  }
 
   if (req.url === "/api/features") {
     res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
