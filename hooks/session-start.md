@@ -20,28 +20,7 @@ Default tracking file locations (if no config found):
 - `.claude/system/history.txt` — chronological work log
 - `.claude/system/rules.txt` — accumulated project constraints and discoveries
 
-Read all tracking files that exist. If none exist, create them:
-
-1. Create the tracking directory (default `.claude/system/`)
-2. Create `features.json` with an empty array: `[]`
-3. Create `history.txt` with an init entry: `[YYYY-MM-DD HH:MM] INIT: Logbook initialized for project`
-4. Create `rules.txt` with a header:
-   ```
-   # Project Rules and Constraints
-   # Append-only — never delete entries, only add new ones
-   ```
-5. Create `.claude/logbook.local.md` with default config:
-   ```yaml
-   ---
-   tracking_dir: .claude/system
-   features_file: features.json
-   history_file: history.txt
-   rules_file: rules.txt
-   id_prefix: F
-   ---
-   ```
-
-Then proceed to step 3.
+Read all tracking files that exist. If none exist, skip to step 4.
 
 ## 3. Identify Current Focus
 
